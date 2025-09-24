@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1757282628" />
+    <testcase name="check_and" classname="test_and_gate" file="/Users/mwd/Developer/HDL/template_verilog_cocotb/tests/test_and_gate.py" lineno="5" time="0.0002951622009277344" sim_time_ns="40.001" ratio_time="135522.09556058157" />
+  </testsuite>
+</testsuites>

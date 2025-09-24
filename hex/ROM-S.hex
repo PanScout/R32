@@ -1,0 +1,12 @@
+00A00093  // addi x1, x0, 4      ; x1 = 0x0004  (base address for every store)
+
+05500113  // addi x2, x0, 0x55   ; x2 = 0x00000055  (test byte)
+002080A3  // sb   x2, 1(x1)      ; BYTE  → mem[x1+1] = 0x55   (@0x0005)
+
+1A500113  // addi x2, x0, 0x1A5  ; x2 = 0x000001A5  (test half-word)
+00209123  // sh   x2, 2(x1)      ; HALF → mem[x1+2] = 0x01A5  (@0x0006, aligned)
+
+1C800113  // addi x2, x0, 0x1C8  ; x2 = 0x000001C8  (test word)
+0020A223  // sw   x2, 4(x1)      ; WORD → mem[x1+4] = 0x000001C8 (@0x0008)
+
+00000013  // addi x0, x0, 0      ; nop (keeps the core alive after the stores)

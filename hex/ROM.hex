@@ -1,0 +1,6 @@
+00A00093  // 0: addi x1, x0, 10        ; loop counter  = 10
+00000113  // 1: addi x2, x0, 0         ; running total = 0
+00110133  // 2: add  x2, x2, x1        ; total += counter
+FFF08093  // 3: addi x1, x1, -1        ; counter--
+FE009EE3  // 4: bne  x1, x0, -8        ; repeat while counter != 0  (branches to instr 2)
+00202023  // 5: sw   x2, 0(x0)         ; store final total at mem[0]

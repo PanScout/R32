@@ -1,0 +1,17 @@
+00500093  // 0000: ADDI  x1, x0,  5          ; x1 = 5
+00500113  // 0004: ADDI  x2, x0,  5          ; x2 = 5
+00208663  // 0008: BEQ   x1, x2, +12 bytes → 0x0014  (taken)
+00100193  // 000C: ADDI  x3, x0,  1          ; skipped if BEQ taken
+00000013  // 0010: NOP                       ; alignment spacer
+00209463  // 0014: BNE   x1, x2, +8  bytes → 0x001C  (not taken)
+00A00213  // 0018: ADDI  x4, x0, 10
+01400293  // 001C: ADDI  x5, x0, 20
+00524463  // 0020: BLT   x4, x5, +8  bytes → 0x0028 (taken)
+00100313  // 0024: ADDI  x6, x0,  1          ; skipped
+0042D463  // 0028: BGE   x5, x4, +8  bytes → 0x0030 (taken)
+00100393  // 002C: ADDI  x7, x0,  1          ; skipped
+00106463  // 0030: BLTU  x0, x1, +8  bytes → 0x0038 (taken)
+00100413  // 0034: ADDI  x8, x0,  1          ; skipped
+0000F463  // 0038: BGEU  x1, x0, +8  bytes → 0x0040 (taken)
+00100493  // 003C: ADDI  x9, x0,  1          ; skipped
+00000063  // 0040: BEQ   x0, x0,  0          ; infinite loop – end of test

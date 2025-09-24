@@ -1,0 +1,47 @@
+00a10093    // ADDI  x1, x2, 10     # x1 = x2 + 10
+00a12093    // SLTI  x1, x2, 10     # x1 = (x2 < 10)
+00a13093    // SLTIU x1, x2, 10     # unsigned
+00a14093    // XORI  x1, x2, 10
+00a16093    // ORI   x1, x2, 10
+00a17093    // ANDI  x1, x2, 10
+00111093    // SLLI  x1, x2, 1
+00115093    // SRLI  x1, x2, 1
+40115093    // SRAI  x1, x2, 1
+003100b3    // ADD   x1, x2, x3
+403100b3    // SUB   x1, x2, x3
+003110b3    // SLL   x1, x2, x3
+003120b3    // SLT   x1, x2, x3
+003130b3    // SLTU  x1, x2, x3
+003140b3    // XOR   x1, x2, x3
+003150b3    // SRL   x1, x2, x3
+403150b3    // SRA   x1, x2, x3
+003160b3    // OR    x1, x2, x3
+003170b3    // AND   x1, x2, x3
+00310023    // SB    x3, 0(x2)
+00311023    // SH    x3, 0(x2)
+00312023    // SW    x3, 0(x2)
+00010083    // LB   x1, 0(x2)
+00011083    // LH   x1, 0(x2)
+00012083    // LW   x1, 0(x2)
+00014083    // LBU  x1, 0(x2)
+00015083    // LHU  x1, 0(x2)
+00310263    // BEQ  x2, x3, 4
+00311263    // BNE  x2, x3, 4
+00314263    // BLT  x2, x3, 4
+00315263    // BGE  x2, x3, 4
+00316263    // BLTU x2, x3, 4
+00317263    // BGEU x2, x3, 4
+004000ef    // JAL   x1, 4
+004100e7    // JALR  x1, 4(x2)
+123450b7    // LUI   x1, 0x12345
+12345097    // AUIPC x1, 0x12345
+0000000f    // FENCE
+0000100f    // FENCE.I
+00000073    // ECALL
+00100073    // EBREAK
+001110f3    // CSRRW  x1, fflags, x2
+001120f3    // CSRRS  x1, fflags, x2
+001130f3    // CSRRC  x1, fflags, x2
+0010d0f3    // CSRRWI x1, fflags, 1
+0010e0f3    // CSRRSI x1, fflags, 1
+0010f0f3    // CSRRCI x1, fflags, 1
