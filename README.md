@@ -1,68 +1,13 @@
-# Overview
+A compact, standards-clean RV32I core in SystemVerilog. The architecture is a modified Harvard design: distinct instruction and data paths for throughput, while sharing a single, flat memory map. The core is a straightforward, non-pipelined 4-stage state machine—FETCH / DECODE / READ / EXECUTE—that’s easy to reason about and extend. It synthesizes cleanly for Gowin GW5A FPGAs and has been verified end-to-end in hardware; timing analysis reports ~271 MHz fMAX.
 
-This is a generic template for GHDL projects. Two ways to use it:
+<p align="center">
+  <img src=".images/syn.png" alt="Synthesis results for the RV32I core (Gowin GW5A)" title="Synthesis results (GW5A)" />
+  <br/>
+  <em>Figure 1 — Synthesis summary</em>
+</p>
 
-1. **Pure GHDL:** `make clean && make`
-2. **Python (cocotb runner):** run a Python test in `tests/` (e.g., `python test_and_gate.py`(make sure you are using the .venv python))
-
----
-
-## Layout
-
-```
-.
-├─ src/               # HDL sources (DUT, packages used by DUT)
-├─ tb/                # VHDL testbenches (GHDL-only)
-├─ lib/<name>/        # Optional VHDL libraries (packages/entities)
-├─ tests/             # Python cocotb tests (+ optional _runner.py helper)
-├─ build/             # Artifacts: obj/bin/waves/runner
-└─ Makefile
-```
-
----
-
-## Quick start
-
-### GHDL flow
-
-```bash
-make clean && make                      # uses TB=tb_top by default
-```
-
-* **TB**: top-level VHDL testbench entity (in `tb/`).
-* **DUMP**: `fst|vcd|ghw` waveform (default `fst`).
-* Waves go to `build/waves/`.
-
-### Python (cocotb runner)
-
-```bash
-make cocotb                    # bootstraps .venv and installs requirements
-```
-
-* Tests use cocotb and call the runner from `__main__` (e.g., `run_cocotb(__file__, dut="and_gate")`).
-* Prints/logging/asserts work like normal Python; wave dumps are off unless you enable them in the runner.
-
----
-
-## Libraries (`lib/`)
-
-* Create `lib/<libname>/` and add VHDL files.
-* In HDL, reference with:
-
-  ```vhdl
-  library <libname>;
-  use <libname>.<pkg_name>.all;
-  ```
-* **GHDL flow:** Makefile auto-discovers and compiles each `lib/<libname>` as its own library before `work`.
-* **Python runner:** include any needed library files in your runner’s source list (or place the required packages under `src/` if you prefer the default `src/**/*.vhd` discovery).
-
----
-
-## Common targets
-
-* `make` / `make run` – analyze/elaborate/run GHDL TB.
-* `make wave` – alias of `run`.
-* `make clean` – remove objects/waves for current work.
-* `make distclean` – remove `build/`.
-* `make cocotb` – set up `.venv` + deps (for Python workflow).
-* `make py FILE=…` / `make pytest` – run Python tests.
+<p align="center">
+  <img src=".images/timing.png" alt="Static timing analysis for the RV32I core showing ~271 MHz fMAX" title="Timing analysis (~271 MHz fMAX)" />
+  <br/>
+  <em>Figure 2 — Timing analysis</em>
+</p>
