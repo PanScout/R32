@@ -32,6 +32,12 @@ void Vtop___024root___eval_triggers__act(Vtop___024root* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
+    vlSelfRef.__VactTriggered.setBit(0U, ((IData)(vlSelfRef.i_clock) 
+                                          & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__i_clock__0))));
+    vlSelfRef.__VactTriggered.setBit(1U, ((IData)(vlSelfRef.i_reset) 
+                                          & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__i_reset__0))));
+    vlSelfRef.__Vtrigprevexpr___TOP__i_clock__0 = vlSelfRef.i_clock;
+    vlSelfRef.__Vtrigprevexpr___TOP__i_reset__0 = vlSelfRef.i_reset;
 #ifdef VL_DEBUG
     if (VL_UNLIKELY(vlSymsp->_vm_contextp__->debug())) {
         Vtop___024root___dump_triggers__act(vlSelf);

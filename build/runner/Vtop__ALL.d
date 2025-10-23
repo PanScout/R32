@@ -8,7 +8,11 @@ Vtop__ALL.o: Vtop__ALL.cpp Vtop.cpp Vtop__pch.h \
   /opt/homebrew/Cellar/verilator/5.038/share/verilator/include/verilated_sym_props.h \
   /opt/homebrew/Cellar/verilator/5.038/share/verilator/include/vltstd/svdpi.h \
   Vtop__Syms.h Vtop.h Vtop___024root.h \
+  /opt/homebrew/Cellar/verilator/5.038/share/verilator/include/verilated_fst_c.h \
+  /opt/homebrew/Cellar/verilator/5.038/share/verilator/include/verilated_trace.h \
   Vtop___024root__DepSet_h4b98a05d__0.cpp \
   Vtop___024root__DepSet_h6944321b__0.cpp Vtop__Dpi.cpp Vtop__Dpi.h \
-  Vtop___024root__Slow.cpp Vtop___024root__DepSet_h4b98a05d__0__Slow.cpp \
-  Vtop___024root__DepSet_h6944321b__0__Slow.cpp Vtop__Syms.cpp
+  Vtop__Trace__0.cpp Vtop__ConstPool_0.cpp Vtop___024root__Slow.cpp \
+  Vtop___024root__DepSet_h4b98a05d__0__Slow.cpp \
+  Vtop___024root__DepSet_h6944321b__0__Slow.cpp Vtop__Syms.cpp \
+  Vtop__Trace__0__Slow.cpp Vtop__TraceDecls__0__Slow.cpp

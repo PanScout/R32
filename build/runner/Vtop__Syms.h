@@ -23,6 +23,8 @@ class alignas(VL_CACHE_LINE_BYTES)Vtop__Syms final : public VerilatedSyms {
   public:
     // INTERNAL STATE
     Vtop* const __Vm_modelp;
+    bool __Vm_activity = false;  ///< Used by trace routines to determine change occurred
+    uint32_t __Vm_baseCode = 0;  ///< Used by trace routines when tracing multiple models
     VlDeleter __Vm_deleter;
     bool __Vm_didInit = false;
 
@@ -30,8 +32,22 @@ class alignas(VL_CACHE_LINE_BYTES)Vtop__Syms final : public VerilatedSyms {
     Vtop___024root                 TOP;
 
     // SCOPE NAMES
+    VerilatedScope __Vscope_R32;
+    VerilatedScope __Vscope_R32__u_ALU;
+    VerilatedScope __Vscope_R32__u_ALU__unnamedblk1;
+    VerilatedScope __Vscope_R32__u_control_unit;
+    VerilatedScope __Vscope_R32__u_control_unit__output_logic;
+    VerilatedScope __Vscope_R32__u_control_unit__output_logic__unnamedblk1;
+    VerilatedScope __Vscope_R32__u_control_unit__output_logic__unnamedblk1__unnamedblk2;
+    VerilatedScope __Vscope_R32__u_control_unit__output_logic__unnamedblk1__unnamedblk3;
+    VerilatedScope __Vscope_R32__u_control_unit__output_logic__unnamedblk1__unnamedblk4;
+    VerilatedScope __Vscope_R32__u_control_unit__output_logic__unnamedblk5;
+    VerilatedScope __Vscope_R32__u_control_unit__output_logic__unnamedblk6;
+    VerilatedScope __Vscope_R32__u_control_unit__output_logic__unnamedblk7;
+    VerilatedScope __Vscope_R32__u_program_counter;
+    VerilatedScope __Vscope_R32__u_register_file;
+    VerilatedScope __Vscope_R32__u_register_file__unnamedblk1;
     VerilatedScope __Vscope_TOP;
-    VerilatedScope __Vscope_and_gate;
 
     // SCOPE HIERARCHY
     VerilatedHierarchy __Vhier;

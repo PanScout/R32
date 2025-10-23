@@ -4,7 +4,7 @@
 # Execute this makefile from the object directory:
 #    make -f Vtop.mk
 
-default: and_gate
+default: R32
 
 ### Constants...
 # Perl executable (from $PERL, defaults to 'perl' if not set)
@@ -40,7 +40,8 @@ VM_USER_CFLAGS = \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
-  -Wl,-rpath,/Users/mwd/Developer/HDL/template_verilog_cocotb/.venv/lib/python3.13/site-packages/cocotb/libs -L/Users/mwd/Developer/HDL/template_verilog_cocotb/.venv/lib/python3.13/site-packages/cocotb/libs -lcocotbvpi_verilator \
+  -Wl,-rpath,/Users/mwd/Developer/HDL/R32/.venv/lib/python3.14/site-packages/cocotb/libs -L/Users/mwd/Developer/HDL/R32/.venv/lib/python3.14/site-packages/cocotb/libs -lcocotbvpi_verilator \
+  -lz \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
@@ -49,7 +50,7 @@ VM_USER_CLASSES = \
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
   . \
-  ../../.venv/lib/python3.13/site-packages/cocotb/share/lib/verilator \
+  ../../.venv/lib/python3.14/site-packages/cocotb/share/lib/verilator \
 
 ### Default rules...
 # Include list of all generated classes
@@ -60,11 +61,11 @@ include $(VERILATOR_ROOT)/include/verilated.mk
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
-verilator.o: /Users/mwd/Developer/HDL/template_verilog_cocotb/.venv/lib/python3.13/site-packages/cocotb/share/lib/verilator/verilator.cpp 
+verilator.o: /Users/mwd/Developer/HDL/R32/.venv/lib/python3.14/site-packages/cocotb/share/lib/verilator/verilator.cpp 
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST)  -c -o $@ $<
 
 ### Link rules... (from --exe)
-and_gate: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
+R32: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
 	$(LINK) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) $(LIBS) $(SC_LIBS) -o $@
 
 # Verilated -*- Makefile -*-

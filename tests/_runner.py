@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Iterable, Mapping, Sequence, Union, Optional
 import sys
 
-from cocotb.runner import get_runner, Verilog  # cocotb’s Python runner API
+from cocotb_tools.runner import get_runner, Verilog
 
 Pathish = Union[str, Path]
 
