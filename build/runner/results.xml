@@ -1,18 +1,18 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1761251742" />
-    <testcase name="test_smoke_arithmetic_store" classname="test_soc" file="/Users/mwd/Developer/HDL/R32/tests/test_soc.py" lineno="421" time="0.0024099349975585938" sim_time_ns="850.0" ratio_time="352706.6086268302">
+    <property name="random_seed" value="1761252212" />
+    <testcase name="test_smoke_arithmetic_store" classname="test_soc" file="/Users/mwd/Developer/HDL/R32/tests/test_soc.py" lineno="371" time="0.0024919509887695312" sim_time_ns="850.0" ratio_time="341098.2013011864">
       <failure error_type="AssertionError" error_msg="Expected 7 at RAM_BASE, got 0x00000000&#10;assert 0 == 7" />
     </testcase>
-    <testcase name="test_load_store_widths_and_sign" classname="test_soc" file="/Users/mwd/Developer/HDL/R32/tests/test_soc.py" lineno="436" time="0.0031280517578125" sim_time_ns="1560.0000000000002" ratio_time="498712.9756097562">
-      <failure error_type="AssertionError" error_msg="LB sign-extend wrong&#10;assert 0 == 4294967252&#10; +  where 0 = ram_read_word((4096 + 4))&#10; +    where ram_read_word = &lt;test_soc.SimpleMemory object at 0x1095b2e90&gt;.ram_read_word" />
+    <testcase name="test_load_store_widths_and_sign" classname="test_soc" file="/Users/mwd/Developer/HDL/R32/tests/test_soc.py" lineno="386" time="0.0031409263610839844" sim_time_ns="1560.0000000000002" ratio_time="496668.759678154">
+      <failure error_type="AssertionError" error_msg="LB sign-extend wrong&#10;assert 0 == 4294967252&#10; +  where 0 = ram_read_word((4096 + 4))&#10; +    where ram_read_word = &lt;test_soc.SimpleMemory object at 0x10923b110&gt;.ram_read_word" />
     </testcase>
-    <testcase name="test_branches" classname="test_soc" file="/Users/mwd/Developer/HDL/R32/tests/test_soc.py" lineno="457" time="0.0024030208587646484" sim_time_ns="1260.0" ratio_time="524340.0178589146">
+    <testcase name="test_branches" classname="test_soc" file="/Users/mwd/Developer/HDL/R32/tests/test_soc.py" lineno="407" time="0.0026297569274902344" sim_time_ns="1260.0" ratio_time="479131.73526745243">
       <failure error_type="AssertionError" error_msg="Branch result wrong, expected 0xAA got 0x00000000&#10;assert 0 == 170" />
     </testcase>
-    <testcase name="test_jal_and_jalr" classname="test_soc" file="/Users/mwd/Developer/HDL/R32/tests/test_soc.py" lineno="472" time="0.003345966339111328" sim_time_ns="1659.9999999999995" ratio_time="496119.7548810031">
+    <testcase name="test_jal_and_jalr" classname="test_soc" file="/Users/mwd/Developer/HDL/R32/tests/test_soc.py" lineno="422" time="0.003117084503173828" sim_time_ns="1659.9999999999995" ratio_time="532548.9245831419">
       <failure error_type="AssertionError" error_msg="JALR return address wrong, got 0x00000000&#10;assert 0 == 4" />
     </testcase>
-    <testcase name="test_illegal_instruction_sets_error" classname="test_soc" file="/Users/mwd/Developer/HDL/R32/tests/test_soc.py" lineno="493" time="0.0002989768981933594" sim_time_ns="90.0" ratio_time="301026.6028708134" />
+    <testcase name="test_illegal_instruction_sets_error" classname="test_soc" file="/Users/mwd/Developer/HDL/R32/tests/test_soc.py" lineno="440" time="0.0002601146697998047" sim_time_ns="90.0" ratio_time="346001.24656278646" />
   </testsuite>
 </testsuites>

@@ -1,33 +1,3 @@
-# tests/test_r32.py
-#
-# Comprehensive cocotb testbench for the "R32" top-level CPU.
-# - Uses a tiny RV32I assembler implemented below to generate instructions.
-# - Provides a cycle-accurate (1-cycle latency) Python ROM/RAM model on the CPU bus.
-# - Verifies arithmetic (R/I), loads/stores (byte/half/word, sign/zero), branches, JAL, JALR,
-#   and error signaling, using memory-mapped signatures.
-# - Intended to be launched via your tests/_runner.py helper:
-#       python tests/test_r32.py
-#   which will call cocotb.runner with hdl_toplevel="R32".
-#
-# DUT ports used (from your R32):
-#   clk                : i_clock
-#   reset              : i_reset
-#   ROM handshake      : o_rom_ready, o_instruction_address, i_instruction
-#   Data bus           : o_data_rw (1=write), o_data, o_data_address, o_data_rw_strobe, i_data
-#   Error              : o_error
-#
-# Notes
-# -----
-# * The ROM model always returns an instruction for the requested byte address (word-aligned)
-#   and behaves like a 1-cycle-latency synchronous memory: instruction is available in the
-#   cycle after o_rom_ready is asserted.
-# * The RAM model implements byte strobes and 1-cycle-latency reads. Stores update immediately
-#   on the cycle o_data_rw==1, as a typical write-through.
-# * To avoid a HALT instruction, tests run for a bounded number of cycles then inspect RAM
-#   "signature" words at 0x00001000, 0x00001004, ... to assert correctness.
-#
-# SPDX-License-Identifier: MIT
-
 from __future__ import annotations
 
 import os
@@ -244,8 +214,8 @@ def JALR(rd, rs1, imm):  return enc_i(rd, rs1, imm, F3_ADD_SUB, OP_I_JALR)
 
 class SimpleMemory:
     def __init__(self):
-        self.rom = {}   # word-addressed (byte address >> 2)
-        self.ram = {}   # byte-addressed backing store as 32-bit words per aligned address
+        self.rom = {}   
+        self.ram = {}   
         self._next_i_data = 0
 
     def load_rom(self, base_addr: int, words: list[int]):
@@ -267,39 +237,30 @@ class SimpleMemory:
         a = self._align(byte_addr)
         cur = self.ram.get(a, 0)
         w = data_word & 0xFFFFFFFF
-        # Byte lanes: bit0 -> [7:0], bit1 -> [15:8], bit2 -> [23:16], bit3 -> [31:24]
         for i in range(4):
             if (strobes >> i) & 1:
                 mask = (0xFF << (8*i))
                 cur = (cur & ~mask) | (w & mask)
         self.ram[a] = cur & 0xFFFFFFFF
 
-    # Coroutines to drive the DUT buses
     async def bus_driver(self, dut):
-        # 1-cycle pipeline on ROM and RAM reads
         self._next_i_data = 0
         dut.i_instruction.value = NOP()
         dut.i_data.value = 0
         await RisingEdge(dut.i_clock)
         while True:
-            # Present previous cycle's data read
             dut.i_data.value = self._next_i_data
 
-            # ROM: provide instruction based on requested address when ROM ready
             pc = int(dut.o_instruction_address.value)
             if int(dut.o_rom_ready.value) == 1:
                 instr = self.rom_read(pc)
             else:
-                instr = self.rom_read(pc)  # keep instruction stable regardless
+                instr = self.rom_read(pc)  
             dut.i_instruction.value = instr
 
-            # RAM: capture read request for next cycle, commit writes now
             if int(dut.o_data_rw.value) == 1:
-                # WRITE
                 self.ram_write(int(dut.o_data_address.value), int(dut.o_data.value), int(dut.o_data_rw_strobe.value))
-                # On writes, next_i_data remains whatever last queued (no read)
             else:
-                # READ -> queue next cycle value
                 self._next_i_data = self.ram_read_word(int(dut.o_data_address.value))
 
             await RisingEdge(dut.i_clock)
@@ -333,13 +294,12 @@ async def run_for(dut, cycles: int):
 def prog_smoke() -> list[int]:
     """Simple arithmetic & store: x1=5, x2=7, x3=x1+x2, x4=x3-x1 => 7; store to RAM_BASE"""
     p = []
-    p += [ADDI(1, 0, 5)]         # x1 = 5
-    p += [ADDI(2, 0, 7)]         # x2 = 7
-    p += [ADD(3, 1, 2)]          # x3 = 12
-    p += [SUB(4, 3, 1)]          # x4 = 7
-    p += [LUI(5, RAM_BASE >> 12)]  # x5 = RAM_BASE
-    p += [SW(5, 4, 0)]           # MEM[RAM_BASE] = x4 (7)
-    # idle a bit
+    p += [ADDI(1, 0, 5)]         
+    p += [ADDI(2, 0, 7)]         
+    p += [ADD(3, 1, 2)]          
+    p += [SUB(4, 3, 1)]          
+    p += [LUI(5, RAM_BASE >> 12)]  
+    p += [SW(5, 4, 0)]           
     p += [NOP(), NOP(), NOP()]
     return p
 
@@ -351,21 +311,16 @@ def prog_load_store() -> tuple[list[int], dict[int, int]]:
     """
     SRC = RAM_BASE + 0x20
     p = []
-    p += [LUI(5, RAM_BASE >> 12)]            # x5 = RAM_BASE
-    p += [ADDI(6, 5, 0x20)]                  # x6 = SRC
-    # LB -> sign-extend low byte (D4 -> 0xFFFFFFD4)
-    p += [LB(7, 6, 0)]                       # x7 = LB 0(x6)
-    p += [SW(5, 7, 0x04)]                    # MEM[RAM_BASE+4] = x7
-    # LBU -> zero-extend low byte (0x000000D4)
+    p += [LUI(5, RAM_BASE >> 12)]            
+    p += [ADDI(6, 5, 0x20)]                  
+    p += [LB(7, 6, 0)]                       
+    p += [SW(5, 7, 0x04)]                    
     p += [LBU(8, 6, 0)]
     p += [SW(5, 8, 0x08)]
-    # LH -> sign-extend halfword (0xC3D4 -> 0xFFFFC3D4)
     p += [LH(9, 6, 0)]
     p += [SW(5, 9, 0x0C)]
-    # LHU -> zero-extend halfword (0x0000C3D4)
     p += [LHU(10, 6, 0)]
     p += [SW(5, 10, 0x10)]
-    # LW -> 0xA1B2C3D4
     p += [LW(11, 6, 0)]
     p += [SW(5, 11, 0x14)]
     p += [NOP(), NOP()]
@@ -376,16 +331,14 @@ def prog_load_store() -> tuple[list[int], dict[int, int]]:
 def prog_branch() -> list[int]:
     """Branch taken and not-taken paths, result stored at RAM_BASE+0x24."""
     p = []
-    p += [ADDI(1, 0, 1)]          # x1 = 1
-    p += [ADDI(2, 0, 1)]          # x2 = 1
-    # beq to +12 bytes -> skip next two instructions into the 'taken' block
-    p += [BEQ(1, 2, 12)]          # from here jump to index +3
-    p += [ADDI(3, 0, 0x55)]       # (will be skipped)
-    p += [JAL(0, 8)]              # skip the fail store (skipped anyway if beq taken)
-    # taken target:
-    p += [ADDI(3, 0, 0xAA)]       # x3 = 0xAA
+    p += [ADDI(1, 0, 1)]          
+    p += [ADDI(2, 0, 1)]          
+    p += [BEQ(1, 2, 12)]          
+    p += [ADDI(3, 0, 0x55)]       
+    p += [JAL(0, 8)]              
+    p += [ADDI(3, 0, 0xAA)]       
     p += [LUI(5, RAM_BASE >> 12)]
-    p += [SW(5, 3, 0x24)]         # MEM[RAM_BASE+0x24] = 0xAA
+    p += [SW(5, 3, 0x24)]         
     p += [NOP()]
     return p
 
@@ -393,19 +346,16 @@ def prog_branch() -> list[int]:
 def prog_jumps() -> list[int]:
     """JALR absolute to PC=16 (instruction index 4) & JAL forward; store return addresses."""
     p = []
-    # JALR with rs1=x0 jumps to absolute immediate & ~1. We target byte address 16.
-    p += [JALR(1, 0, 16)]         # x1 = return addr (0x4); jump to PC=16
-    p += [ADDI(2, 0, 0x11)]       # (skipped)
-    p += [ADDI(2, 0, 0x22)]       # (skipped)
-    p += [ADDI(2, 0, 0x33)]       # (skipped)
-    # target @ PC=16:
-    p += [ADDI(3, 0, 0x66)]       # land here
+    p += [JALR(1, 0, 16)]         
+    p += [ADDI(2, 0, 0x11)]       
+    p += [ADDI(2, 0, 0x22)]       
+    p += [ADDI(2, 0, 0x33)]       
+    p += [ADDI(3, 0, 0x66)]       
     p += [LUI(5, RAM_BASE >> 12)]
-    p += [SW(5, 1, 0x28)]         # store x1 (should be 0x00000004)
-    # JAL forward by 8 bytes (skip one instruction), rd=x4 gets return PC
-    p += [JAL(4, 8)]              # return should be address of next instruction (current PC+4)
-    p += [ADDI(6, 0, 0x77)]       # skipped
-    p += [SW(5, 4, 0x2C)]         # store x4 (return address from JAL)
+    p += [SW(5, 1, 0x28)]         
+    p += [JAL(4, 8)]              
+    p += [ADDI(6, 0, 0x77)]       
+    p += [SW(5, 4, 0x2C)]         
     p += [NOP()]
     return p
 
@@ -484,9 +434,6 @@ async def test_jal_and_jalr(dut):
     assert ra_jalr == 0x00000004, f"JALR return address wrong, got 0x{ra_jalr:08X}"
 
     ra_jal = mem.ram_read_word(RAM_BASE + 0x2C)
-    # When executing JAL at PC=p, rd gets p+4. In our program, JAL is placed so that p is known:
-    # Program addresses: [0: JALR, 4: -, 8: -, 12: -, 16: ADDI, 20: LUI, 24: SW, 28: JAL, 32: ADDI(skipped), 36: SW]
-    # So JAL at 28 -> rd should get 32 (0x20)
     assert ra_jal == 0x00000020, f"JAL return address wrong, expected 0x00000020 got 0x{ra_jal:08X}"
 
 
@@ -509,15 +456,10 @@ async def test_illegal_instruction_sets_error(dut):
     assert saw_error, "o_error never asserted after illegal instruction"
 
 
-# ------------------------------------------------------------
-# Local CLI entry-point via the provided tests/_runner.py helper
-# ------------------------------------------------------------
 if __name__ == "__main__":
-    # Run with waves to aid debug if desired
     try:
         from _runner import run_cocotb
     except Exception:
-        # Allow invocation from repo root or tests/ dir
         import sys
         sys.path.append(os.path.dirname(__file__))
         from _runner import run_cocotb
@@ -526,5 +468,4 @@ if __name__ == "__main__":
         pyfile=__file__,
         dut="R32",
         waves=True,
-        # If your HDL sources are not under src/, pass sources=[...] explicitly.
     )
