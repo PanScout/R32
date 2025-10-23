@@ -6,10 +6,6 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer
 
-# ------------------------------------------------------------
-# Tiny RV32I assembler helpers (enough for this testbench)
-# ------------------------------------------------------------
-
 # Opcode constants (7-bit)
 OP_R_TYPE       = 0b0110011
 OP_I_ARITH      = 0b0010011
